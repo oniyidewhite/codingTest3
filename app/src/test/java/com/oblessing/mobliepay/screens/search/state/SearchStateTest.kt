@@ -44,7 +44,8 @@ class SearchStateTest {
                         "x",
                         "x",
                         "x",
-                        "x"
+                        "x",
+                        1L
                     )
                 ), PageMeta(0, 0)
             )
@@ -62,7 +63,8 @@ class SearchStateTest {
                     "x",
                     "x",
                     "x",
-                    "x"
+                    "x",
+                    1L
                 )
             )
         )
@@ -81,13 +83,46 @@ class SearchStateTest {
                             "x",
                             "x",
                             "x",
-                            "x"
+                            "x",
+                            1L
                         )
-                    ), PageMeta(1, 1)
+                    ), PageMeta(1, 3)
                 )
             )
         assert((state.effect as SearchState.Effect.SubmitRequest).meta.offset == 1)
         assert(!state.showProgress)
         assert(state.result.count() == 1)
+
+        // Don't load next if we no longer have content
+        state =
+            state.reduce(SearchState.Event.TappedFind("xt")).reduce(
+                SearchState.Event.RequestSuccessful(
+                    listOf(
+                        Place(
+                            "x",
+                            "x",
+                            "x",
+                            "x",
+                            "x",
+                            "x",
+                            1L
+                        )
+                    ), PageMeta(1, 1)
+                )
+            )
+        assert((state.effect  == null))
+        assert(!state.showProgress)
+        assert(state.result.count() == 1)
+
+        // Show no content if the search returns empty after find
+        state =
+            state.reduce(SearchState.Event.TappedFind("xt")).reduce(
+                SearchState.Event.RequestSuccessful(
+                    listOf(), PageMeta(0, 0)
+                )
+            )
+        assert((state.effect  == SearchState.Effect.ShowNoContent))
+        assert(!state.showProgress)
+        assert(state.result.isEmpty())
     }
 }
