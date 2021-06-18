@@ -1,0 +1,8 @@
+<resources>
+    <string name="label_mobilepay">MobilePay</string>
+    <string name="hint_search">Find</string>
+    <string name="label_no_content">No result</string>
+    <string name="label_no_content_description">No result was found for this request</string>
+    <string name="error_message">Unexpected error occured, Try again later</string>
+    <string name="label_retry">Retry</string>
+</resources>
